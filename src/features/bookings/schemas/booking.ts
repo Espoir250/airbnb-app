@@ -2,11 +2,29 @@ import { z } from "zod";
 
 const maxFileSize = 5 * 1024 * 1024;
 
+const today = new Date();
+today.setHours(0, 0, 0, 0);
+
+const endOfYear = new Date("2026-12-31");
+endOfYear.setHours(23, 59, 59, 999);
+
 export const bookingDatesSchema = z
   .object({
     checkIn: z.string().min(1, "Check-in is required"),
     checkOut: z.string().min(1, "Check-out is required"),
     guests: z.number().min(1, "At least 1 guest").max(16, "Maximum 16 guests"),
+  })
+  .refine((value) => new Date(value.checkIn) >= today, {
+    message: "Check-in cannot be in the past",
+    path: ["checkIn"],
+  })
+  .refine((value) => new Date(value.checkIn) <= endOfYear, {
+    message: "Check-in cannot be beyond 2026",
+    path: ["checkIn"],
+  })
+  .refine((value) => new Date(value.checkOut) <= endOfYear, {
+    message: "Check-out cannot be beyond 2026",
+    path: ["checkOut"],
   })
   .refine((value) => new Date(value.checkOut) > new Date(value.checkIn), {
     message: "Check-out must be after check-in",

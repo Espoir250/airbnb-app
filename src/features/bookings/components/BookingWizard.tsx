@@ -17,6 +17,9 @@ import {
   type PaymentInput,
 } from "../schemas/booking";
 
+const TODAY = new Date().toISOString().split("T")[0];
+const MAX_DATE = "2026-12-31";
+
 function nightsBetween(checkIn?: string, checkOut?: string) {
   if (!checkIn || !checkOut) return 0;
   const nights = Math.ceil(
@@ -114,12 +117,22 @@ export function BookingWizard({ listing }: { listing: Listing }) {
             >
               <label>
                 Check-in
-                <input type="date" {...datesForm.register("checkIn")} />
+                <input
+                  type="date"
+                  min={TODAY}       // ✅ can't pick past dates
+                  max={MAX_DATE}    // ✅ can't go beyond 2026
+                  {...datesForm.register("checkIn")}
+                />
                 <FieldError message={datesForm.formState.errors.checkIn?.message} />
               </label>
               <label>
                 Check-out
-                <input type="date" {...datesForm.register("checkOut")} />
+                <input
+                  type="date"
+                  min={TODAY}       // ✅ can't pick past dates
+                  max={MAX_DATE}    // ✅ can't go beyond 2026
+                  {...datesForm.register("checkOut")}
+                />
                 <FieldError message={datesForm.formState.errors.checkOut?.message} />
               </label>
               <label>
@@ -176,9 +189,7 @@ export function BookingWizard({ listing }: { listing: Listing }) {
               </label>
               {preview && <img className="photoPreview" src={preview} alt="Guest preview" />}
               <div className="buttonRow">
-                <button type="button" onClick={() => setStep(1)}>
-                  Back
-                </button>
+                <button type="button" onClick={() => setStep(1)}>Back</button>
                 <button className="appButton">Continue</button>
               </div>
             </form>
@@ -208,9 +219,7 @@ export function BookingWizard({ listing }: { listing: Listing }) {
                 <FieldError message={paymentForm.formState.errors.cvv?.message} />
               </label>
               <div className="buttonRow">
-                <button type="button" onClick={() => setStep(2)}>
-                  Back
-                </button>
+                <button type="button" onClick={() => setStep(2)}>Back</button>
                 <button className="appButton">Review</button>
               </div>
             </form>
@@ -220,21 +229,15 @@ export function BookingWizard({ listing }: { listing: Listing }) {
             <div className="formStack">
               <h3>Confirm booking</h3>
               <p>{listing.title}</p>
+              <p>{data.checkIn} to {data.checkOut}</p>
               <p>
-                {data.checkIn} to {data.checkOut}
-              </p>
-              <p>
-                {data.guests} guest{data.guests === 1 ? "" : "s"} - {nights} night
+                {data.guests} guest{data.guests === 1 ? "" : "s"} — {nights} night
                 {nights === 1 ? "" : "s"}
               </p>
-              <p>
-                Guest: {data.name} ({data.email})
-              </p>
+              <p>Guest: {data.name} ({data.email})</p>
               <strong>Total: {formatCurrency(totalPrice)}</strong>
               <div className="buttonRow">
-                <button type="button" onClick={() => setStep(3)}>
-                  Back
-                </button>
+                <button type="button" onClick={() => setStep(3)}>Back</button>
                 <button
                   className="appButton"
                   type="button"
