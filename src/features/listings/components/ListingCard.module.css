@@ -1,0 +1,314 @@
+/* ─── Card base ─────────────────────────────────────────────── */
+.card {
+  background: #ffffff;
+  border-radius: 16px;
+  overflow: hidden;
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.08);
+  border: 1.5px solid transparent;
+  cursor: pointer;
+  flex: 0 0 216px;
+  min-width: 216px;
+
+  /* Lift on hover */
+  transition:
+    transform 0.25s ease,
+    box-shadow 0.25s ease,
+    border-color 0.25s ease;
+}
+
+.card:hover {
+  transform: translateY(-6px);
+  box-shadow: 0 12px 32px rgba(0, 0, 0, 0.14);
+}
+
+/* ─── State variants ─────────────────────────────────────────── */
+.cardSaved {
+  border-color: #f43f5e; /* rose */
+}
+
+.cardLuxury {
+  border-color: #f59e0b; /* amber */
+}
+
+.cardBooked {
+  opacity: 0.65;
+}
+
+/* Superhost: subtle golden glow + left accent bar */
+.cardSuperhost {
+  border-left: 4px solid #f59e0b;
+  box-shadow:
+    0 2px 8px rgba(0, 0, 0, 0.08),
+    0 0 0 2px rgba(245, 158, 11, 0.15);
+}
+
+.cardSuperhost:hover {
+  box-shadow:
+    0 12px 32px rgba(0, 0, 0, 0.14),
+    0 0 0 3px rgba(245, 158, 11, 0.25);
+}
+
+/* ─── Image ──────────────────────────────────────────────────── */
+.imageWrapper {
+  position: relative;
+  aspect-ratio: 4 / 3;
+  overflow: hidden;
+}
+
+.image {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  transition: transform 0.45s ease;
+}
+
+.card:hover .image {
+  transform: scale(1.04);
+}
+
+/* ─── Favourite button ───────────────────────────────────────── */
+.favoriteBtn {
+  position: absolute;
+  top: 10px;
+  right: 10px;
+  background: rgba(255, 255, 255, 0.85);
+  backdrop-filter: blur(4px);
+  border: none;
+  border-radius: 50%;
+  width: 34px;
+  height: 34px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  cursor: pointer;
+  color: #9ca3af;
+  font-size: 15px;
+  transition:
+    color 0.2s,
+    background 0.2s,
+    transform 0.2s;
+}
+
+.favoriteBtn:hover {
+  transform: scale(1.15);
+  background: #ffffff;
+}
+
+.favoriteBtnSaved {
+  color: #f43f5e;
+}
+
+/* ─── Superhost ribbon ───────────────────────────────────────── */
+.superhostRibbon {
+  position: absolute;
+  top: 10px;
+  left: 10px;
+  background: linear-gradient(135deg, #f59e0b, #fbbf24);
+  color: #ffffff;
+  font-size: 10px;
+  font-weight: 700;
+  letter-spacing: 0.06em;
+  text-transform: uppercase;
+  padding: 3px 8px;
+  border-radius: 999px;
+  box-shadow: 0 2px 6px rgba(245, 158, 11, 0.45);
+}
+
+/* ─── Content ────────────────────────────────────────────────── */
+.content {
+  padding: 14px 16px 16px;
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+}
+
+.title {
+  font-size: 15px;
+  font-weight: 600;
+  color: #111827;
+  margin: 0;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+.location {
+  display: flex;
+  align-items: center;
+  gap: 5px;
+  font-size: 13px;
+  color: #6b7280;
+  margin: 0;
+}
+
+.location span {
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+.host {
+  display: flex;
+  align-items: center;
+  gap: 5px;
+  min-width: 0;
+  font-size: 13px;
+  color: #374151;
+  margin: 0;
+}
+
+.host svg {
+  color: #f43f5e;
+  flex: 0 0 auto;
+}
+
+.host span {
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+.meta {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+}
+
+.rating {
+  display: flex;
+  align-items: center;
+  gap: 4px;
+  font-size: 13px;
+  color: #374151;
+  margin: 0;
+}
+
+.rating svg {
+  color: #f59e0b;
+}
+
+.price {
+  font-size: 15px;
+  font-weight: 700;
+  color: #111827;
+  margin: 0;
+}
+
+.perNight {
+  font-size: 12px;
+  font-weight: 400;
+  color: #9ca3af;
+}
+
+.date {
+  font-size: 12px;
+  color: #9ca3af;
+  margin: 0;
+}
+
+/* ─── Badges ─────────────────────────────────────────────────── */
+.badges {
+  display: flex;
+  gap: 6px;
+  flex-wrap: wrap;
+  margin-top: 2px;
+}
+
+.badge {
+  font-size: 11px;
+  font-weight: 600;
+  padding: 2px 8px;
+  border-radius: 999px;
+  letter-spacing: 0.03em;
+}
+
+.badgeLuxury {
+  background: #fef3c7;
+  color: #92400e;
+}
+
+.badgeAvailable {
+  background: #d1fae5;
+  color: #065f46;
+}
+
+.badgeBooked {
+  background: #fee2e2;
+  color: #991b1b;
+}
+
+/* ── Arrow buttons ─────────────────────────────────────────── */
+.arrow {
+  position: absolute;
+  top: 50%;
+  transform: translateY(-50%);
+  background: rgba(255, 255, 255, 0.9);
+  border: none;
+  border-radius: 50%;
+  width: 28px;
+  height: 28px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  cursor: pointer;
+  font-size: 11px;
+  color: #111827;
+  opacity: 0;                         /* hidden by default */
+  transition: opacity 0.2s, transform 0.2s;
+  z-index: 2;
+}
+
+/* Show arrows only when hovering the card */
+.card:hover .arrow {
+  opacity: 1;
+}
+
+.arrowLeft  { left: 8px; }
+.arrowRight { right: 8px; }
+
+.arrow:hover {
+  transform: translateY(-50%) scale(1.1);
+  background: #ffffff;
+}
+
+/* ── Dot indicators ────────────────────────────────────────── */
+.dots {
+  position: absolute;
+  bottom: 8px;
+  left: 50%;
+  transform: translateX(-50%);
+  display: flex;
+  gap: 4px;
+  z-index: 2;
+}
+
+.dot {
+  width: 6px;
+  height: 6px;
+  border-radius: 50%;
+  background: rgba(255, 255, 255, 0.6);
+  transition: background 0.2s, transform 0.2s;
+}
+
+.dotActive {
+  background: #ffffff;
+  transform: scale(1.25);
+}
+
+.expandedGallery {
+  position: absolute;
+  inset: 0;
+  background: rgba(0,0,0,0.85);
+  display: grid;
+  grid-template-columns: repeat(2, 1fr);
+  gap: 10px;
+  padding: 10px;
+  overflow: auto;
+  z-index: 10;
+}
+
+.expandedImage {
+  width: 100%;
+  border-radius: 10px;
+  object-fit: cover;
+}

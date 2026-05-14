@@ -1,0 +1,277 @@
+import { FaBuilding, FaCalendarCheck, FaChartLine, FaEnvelope, FaHome, FaMoneyBillWave, FaPlus, FaSignOutAlt, FaSlidersH } from "react-icons/fa";
+import { useState } from "react";
+import { Link, useLocation, useNavigate } from "react-router-dom";
+import { formatCurrency } from "../../../shared/currency";
+import { useAuth } from "../../auth/hooks/useAuth";
+import { useDeleteListing, useUpdateHostBookingStatus } from "../hooks/useDeleteListing";
+import { useHostBookings, useMyListings } from "../hooks/useMyListings";
+import { LISTING_CATEGORIES, categoryLabel, normalizeFormCategory } from "../utils/listingPayload";
+
+function statusClass(status?: string) {
+  return `statusPill status-${(status ?? "draft").toLowerCase()}`;
+}
+
+export function HostDashboard() {
+  const [activePanel, setActivePanel] = useState("overview");
+  const { user, logout } = useAuth();
+  const { hash } = useLocation();
+  const navigate = useNavigate();
+  const { data: listings = [], isLoading } = useMyListings();
+  const { data: bookings = [] } = useHostBookings();
+  const deleteListing = useDeleteListing();
+  const approveBooking = useUpdateHostBookingStatus("confirmed");
+  const declineBooking = useUpdateHostBookingStatus("declined");
+
+  const totalEarnings = bookings
+    .filter((booking) => booking.status?.toLowerCase() === "confirmed")
+    .reduce((total, booking) => total + booking.totalPrice, 0);
+  const pendingBookings = bookings.filter((booking) => booking.status?.toLowerCase() === "pending").length;
+  const categorizedListings = LISTING_CATEGORIES.map((category) => ({
+    ...category,
+    listings: listings.filter(
+      (listing) => normalizeFormCategory(listing.category ?? listing.type) === category.value,
+    ),
+  }));
+
+  const routedPanel =
+    hash === "#reservations" ? "reservations" : hash === "#listings" ? "listings" : activePanel;
+
+  function showPanel(panel: string) {
+    setActivePanel(panel);
+    navigate("/host", { replace: true });
+  }
+
+  function handleLogout() {
+    logout();
+    navigate("/");
+  }
+
+  return (
+    <main className="dashboardShell proDashboard">
+      <aside className="dashboardSidebar">
+        <Link className="dashboardBrand" to="/">
+          <span><FaHome /></span>
+          <strong>Stays</strong>
+        </Link>
+        <p className="sidebarLabel">Host panel</p>
+        <nav className="sidebarNav">
+          <button className={routedPanel === "overview" ? "active" : ""} type="button" onClick={() => showPanel("overview")}><FaChartLine /> Overview</button>
+          <button className={routedPanel === "listings" ? "active" : ""} type="button" onClick={() => showPanel("listings")}><FaBuilding /> My Listings</button>
+          <button className={routedPanel === "reservations" ? "active" : ""} type="button" onClick={() => showPanel("reservations")}><FaCalendarCheck /> Reservations</button>
+          <button className={routedPanel === "earnings" ? "active" : ""} type="button" onClick={() => showPanel("earnings")}><FaMoneyBillWave /> Earnings</button>
+          <button className={routedPanel === "messages" ? "active" : ""} type="button" onClick={() => showPanel("messages")}><FaEnvelope /> Messages</button>
+          <button className={routedPanel === "settings" ? "active" : ""} type="button" onClick={() => showPanel("settings")}><FaSlidersH /> Settings</button>
+        </nav>
+        <button className="sidebarLogout" type="button" onClick={handleLogout}>
+          <FaSignOutAlt /> Logout
+        </button>
+      </aside>
+
+      <section className="dashboardWorkspace">
+        <input className="dashboardSearch" placeholder="Search dashboard..." />
+
+        {routedPanel === "overview" && (
+          <>
+            <section className="dashboardHero">
+              <div>
+                <p className="dashboardBadge">Host Dashboard</p>
+                <h1 className="dashboardTitle">Welcome back, {user?.name ?? "Host"}</h1>
+                <p className="dashboardLead">
+                  Track your listings, reservations, and earnings from one professional workspace.
+                </p>
+              </div>
+            </section>
+
+            <section className="metricGrid">
+          <article className="metricCard">
+            <span><FaBuilding /></span>
+            <strong>{listings.length}</strong>
+            <p>Listings Created</p>
+          </article>
+          <article className="metricCard">
+            <span><FaCalendarCheck /></span>
+            <strong>{bookings.length}</strong>
+            <p>Reservations</p>
+          </article>
+          <article className="metricCard">
+            <span><FaMoneyBillWave /></span>
+            <strong>{formatCurrency(totalEarnings)}</strong>
+            <p>Total Earnings</p>
+          </article>
+          <Link className="metricCard metricLink" to="/host/listings/new">
+            <span><FaPlus /></span>
+            <strong>Add</strong>
+            <p>Create Listing</p>
+          </Link>
+            </section>
+          </>
+        )}
+
+        {(routedPanel === "overview" || routedPanel === "listings") && (
+        <section className="dashboardPanel">
+          <div className="sectionHeader">
+            <div>
+              <p className="eyebrow">Inventory</p>
+              <h2>Your listings</h2>
+            </div>
+            <div className="buttonRow">
+              <p className="refreshNote">{pendingBookings} pending booking request{pendingBookings === 1 ? "" : "s"}</p>
+              <Link className="appButton" to="/host/listings/new">
+                <FaPlus /> Add Listing
+              </Link>
+            </div>
+          </div>
+
+          {isLoading ? (
+            <div className="pageSpinner" />
+          ) : listings.length === 0 ? (
+            <div className="emptyState">
+              <h2>No listings yet</h2>
+              <p>Create your first place so guests can start booking.</p>
+            </div>
+          ) : (
+            <div className="categoryTableStack">
+              {categorizedListings.map((group) => (
+                <section className="categoryTableGroup" key={group.value}>
+                  <div className="categoryTableHeader">
+                    <h3>{group.label}</h3>
+                    <span>{group.listings.length} listing{group.listings.length === 1 ? "" : "s"}</span>
+                  </div>
+
+                  {group.listings.length === 0 ? (
+                    <p className="emptyState">No {group.label.toLowerCase()} listings yet.</p>
+                  ) : (
+                    <div className="dataTable dataTableListings">
+                      <div className="dataTableHead">
+                        <span>Listing</span>
+                        <span>Location</span>
+                        <span>Category</span>
+                        <span>Status</span>
+                        <span>Price</span>
+                        <span>Action</span>
+                      </div>
+                      {group.listings.map((listing) => (
+                        <div className="dataTableRow" key={listing.id}>
+                          <span className="tableListingCell">
+                            <img src={listing.img?.[0] ?? "https://placehold.co/80x64?text=Stay"} alt={listing.title} />
+                            <span>
+                              <strong>{listing.title}</strong>
+                              <small>Host: {listing.hostName ?? user?.name ?? "You"}</small>
+                            </span>
+                          </span>
+                          <span>{listing.location}</span>
+                          <span>{categoryLabel(listing.category ?? listing.type)}</span>
+                          <span><span className={statusClass(listing.status)}>{listing.status ?? "draft"}</span></span>
+                          <span>{formatCurrency(listing.price)} / night</span>
+                          <div className="buttonRow">
+                            <Link to={`/listing/${listing.id}`}>View</Link>
+                            <Link to={`/host/listings/${listing.id}/edit`}>Edit</Link>
+                            <button
+                              type="button"
+                              onClick={() => {
+                                if (window.confirm("Delete this listing?")) deleteListing.mutate(listing.id);
+                              }}
+                            >
+                              Delete
+                            </button>
+                          </div>
+                        </div>
+                      ))}
+                    </div>
+                  )}
+                </section>
+              ))}
+            </div>
+          )}
+        </section>
+        )}
+
+        {(routedPanel === "overview" || routedPanel === "reservations") && (
+        <section className="dashboardPanel">
+          <div className="sectionHeader">
+            <div>
+              <p className="eyebrow">Requests</p>
+              <h2>Guest bookings</h2>
+            </div>
+          </div>
+
+          {bookings.length === 0 ? (
+            <p className="emptyState">No bookings for your listings yet.</p>
+          ) : (
+            <div className="dataTable dataTableBookings">
+              <div className="dataTableHead">
+                <span>Listing</span>
+                <span>Guest</span>
+                <span>Dates</span>
+                <span>Status</span>
+                <span>Total</span>
+                <span>Action</span>
+              </div>
+              {bookings.map((booking) => (
+                <div className="dataTableRow" key={booking.id}>
+                  <span>{booking.listingTitle}</span>
+                  <span>{booking.guestName ?? "Guest"}</span>
+                  <span>{booking.checkIn} to {booking.checkOut} · {booking.guests} guest{booking.guests === 1 ? "" : "s"}</span>
+                  <span><span className={statusClass(booking.status)}>{booking.status}</span></span>
+                  <span>{formatCurrency(booking.totalPrice)}</span>
+                  <span>
+                    {booking.status?.toLowerCase() === "pending" ? (
+                      <div className="buttonRow">
+                        <button type="button" onClick={() => approveBooking.mutate(booking.id)}>
+                          Approve
+                        </button>
+                        <button type="button" onClick={() => declineBooking.mutate(booking.id)}>
+                          Decline
+                        </button>
+                      </div>
+                    ) : (
+                      "No action"
+                    )}
+                  </span>
+                </div>
+              ))}
+            </div>
+          )}
+        </section>
+        )}
+
+        {routedPanel === "earnings" && (
+          <section className="dashboardPanel">
+            <div className="sectionHeader">
+              <div>
+                <p className="eyebrow">Earnings</p>
+                <h2>Revenue summary</h2>
+              </div>
+            </div>
+            <div className="metricGrid">
+              <article className="metricCard">
+                <span><FaMoneyBillWave /></span>
+                <strong>{formatCurrency(totalEarnings)}</strong>
+                <p>Confirmed Earnings</p>
+              </article>
+              <article className="metricCard">
+                <span><FaCalendarCheck /></span>
+                <strong>{bookings.length}</strong>
+                <p>Total Reservations</p>
+              </article>
+            </div>
+          </section>
+        )}
+
+        {routedPanel === "messages" && (
+          <section className="dashboardPanel emptyState">
+            <h2>Messages</h2>
+            <p>Guest messages will appear here when the backend provides them.</p>
+          </section>
+        )}
+
+        {routedPanel === "settings" && (
+          <section className="dashboardPanel emptyState">
+            <h2>Settings</h2>
+            <p>Host settings will appear here.</p>
+          </section>
+        )}
+      </section>
+    </main>
+  );
+}

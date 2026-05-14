@@ -1,0 +1,231 @@
+/* ===== HEADER ===== */
+.header {
+  width: 100%;
+  border-bottom: 1px solid #eee;
+  background: #ffffff;
+  position: sticky;
+  top: 0;
+  z-index: 100;
+}
+
+/* ===== NAVBAR CONTAINER ===== */
+.navbar {
+  max-width: 1200px;
+  margin: 0 auto;
+  padding: 14px 20px;
+
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+}
+
+/* ===== LOGO ===== */
+.logo {
+  font-size: 20px;
+  font-weight: 700;
+  cursor: pointer;
+  user-select: none;
+}
+
+.logoAccent {
+  color: #ff385c;
+}
+
+/* ===== NAV LINKS ===== */
+.navLinks {
+  display: flex;
+  align-items: center;
+  gap: 18px;
+}
+
+/* Individual link */
+.navItem {
+  text-decoration: none;
+  color: #444;
+  font-weight: 500;
+  padding: 8px 12px;
+  border-radius: 8px;
+  transition: all 0.25s ease;
+}
+
+/* 🔥 Hover */
+.navItem:hover {
+  background-color: #f2f2f2;
+  color: #000;
+}
+
+/* ✅ Active route */
+.navItemActive {
+  background-color: #ff385c;
+  color: #fff;
+}
+
+/* ===== ACTION BUTTONS ===== */
+.actions {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+}
+
+/* Heart / icon button */
+.iconBtn {
+  position: relative;
+  border: none;
+  background: transparent;
+  cursor: pointer;
+  padding: 8px;
+  border-radius: 50%;
+  transition: background 0.2s ease;
+}
+
+.iconBtn:hover {
+  background: #f2f2f2;
+}
+
+/* Badge (saved count) */
+.badge {
+  position: absolute;
+  top: -4px;
+  right: -4px;
+  background: #ff385c;
+  color: #fff;
+  font-size: 10px;
+  padding: 2px 6px;
+  border-radius: 50%;
+}
+
+/* Add Listing Button */
+.addBtn {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+
+  background: #ff385c;
+  color: #fff;
+  border: none;
+
+  padding: 8px 14px;
+  border-radius: 999px;
+
+  cursor: pointer;
+  transition: 0.2s ease;
+}
+
+.addBtn:hover {
+  background: #e03150;
+}
+
+.authBtn {
+  border: 1px solid #d9d9d9;
+  background: #ffffff;
+  color: #222222;
+  padding: 8px 14px;
+  border-radius: 999px;
+  cursor: pointer;
+  font-weight: 600;
+  transition:
+    border-color 0.2s ease,
+    background 0.2s ease;
+}
+
+.authBtn:hover {
+  border-color: #222222;
+  background: #f7f7f7;
+}
+
+.loginIconBtn {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: 42px;
+  height: 42px;
+  border: 1px solid #d9d9d9;
+  border-radius: 999px;
+  background: #ffffff;
+  color: #222222;
+  cursor: pointer;
+  font-size: 22px;
+  transition:
+    border-color 0.2s ease,
+    background 0.2s ease,
+    color 0.2s ease;
+}
+
+.loginIconBtn:hover {
+  border-color: #ff385c;
+  background: #fff1f2;
+  color: #ff385c;
+}
+
+.addIcon {
+  font-size: 16px;
+  font-weight: bold;
+}
+
+/* ===== MOBILE MENU BUTTON ===== */
+.menuBtn {
+  display: none;
+  background: none;
+  border: none;
+  cursor: pointer;
+}
+
+/* Hamburger icon */
+.menuIcon span {
+  display: block;
+  width: 20px;
+  height: 2px;
+  background: #000;
+  margin: 4px 0;
+  transition: 0.3s;
+}
+
+/* ===== MOBILE PANEL ===== */
+.mobilePanel {
+  display: none;
+}
+
+.mobilePanelOpen {
+  display: none;
+}
+
+/* Mobile nav links */
+.mobileNavLinks {
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+}
+
+/* Mobile actions */
+.mobileActions {
+  margin-top: 16px;
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+}
+
+/* ===== RESPONSIVE ===== */
+@media (max-width: 768px) {
+  /* Hide desktop nav */
+  .navLinks {
+    display: none;
+  }
+
+  /* Show menu button */
+  .menuBtn {
+    display: block;
+  }
+
+  /* Mobile panel closed */
+  .mobilePanel {
+    display: none;
+  }
+
+  /* Mobile panel open */
+  .mobilePanelOpen {
+    display: block;
+    padding: 20px;
+    background: #fff;
+    border-top: 1px solid #eee;
+  }
+}

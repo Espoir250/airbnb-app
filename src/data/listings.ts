@@ -1,0 +1,202 @@
+// src/data/listings.ts
+import type { Listing } from "../features/listings/types";
+
+export const listings: Listing[] = [
+  {
+    id: "1",
+    title: "Tropical Villa with Pool",
+    location: "Rusizi, Rwanda",
+    price: 185,
+    pricePerNight: 185,
+    guests: 4,
+    rating: 4.97,
+    type: "HOTEL",
+    amenities: ["Pool", "Garden"],
+
+    superhost: true,
+    category: "HOTEL",
+    hostName: "Aline",
+    propertyType: "HOTEL",
+    description:
+      "A bright private villa near Lake Kivu with a pool, garden views, and relaxed space for a quiet getaway.",
+    // apartement-type images (apartments)
+    img: [
+      "https://images.unsplash.com/photo-1537996194471-e657df975ab4?w=400&h=260&fit=crop",
+      "https://images.unsplash.com/photo-1505693416388-ac5ce068fe85?w=400&h=260&fit=crop",
+    ],
+  },
+  {
+    id: "2",
+    title: "MARRIOT Skyline Loft",
+    location: "KIGALI, Rwanda",
+    price: 200,
+    pricePerNight: 200,
+    guests: 3,
+    rating: 4.85,
+    type: "APARTMENT",
+    amenities: ["Wifi", "Kitchen"],
+
+    superhost: false,
+    category: "APARTMENT",
+    hostName: "Jean Paul",
+    propertyType: "APARTMENT",
+    description:
+      "A modern city loft close to Kigali's restaurants, cafes, and business district with skyline views.",
+    // hotel-type images (hotels)
+    img: [
+      "https://images.unsplash.com/photo-1522708323590-d24dbb6b0267?w=400&h=260&fit=crop",
+      "https://images.unsplash.com/photo-1445019980597-93fa8acb246c?w=400&h=260&fit=crop",
+    ],
+  },
+  {
+    id: "3",
+    title: "Chateau Marara Hotel",
+    location: "Rusizi, Rwanda",
+    price: 200,
+    pricePerNight: 200,
+    guests: 2,
+    rating: 4.99,
+    type: "HOTEL",
+    amenities: ["Parking", "Lounge"],
+
+    superhost: true,
+    category: "HOTEL",
+    hostName: "Chateau Marara",
+    propertyType: "HOTEL",
+    description:
+      "A calm hotel stay in Rusizi with polished rooms, warm service, and easy access to lakeside scenery.",
+    // cabins/other vibe images (other)
+    img: [
+      "https://images.unsplash.com/photo-1499793983690-e29da59ef1c2?w=400&h=260&fit=crop",
+      "https://images.unsplash.com/photo-1512918728675-ed5a9ecdebfd?w=400&h=260&fit=crop",
+      "https://images.unsplash.com/photo-1441974231531-c6227db76b6e?w=400&h=260&fit=crop",
+    ],
+  },
+  {
+    id: "4",
+    title: "Home in King Fahd",
+    location: "Riyadh, Saudi Arabia",
+    price: 61,
+    pricePerNight: 61,
+    guests: 2,
+    rating: 4.85,
+    type: "HOUSE",
+    amenities: ["Cinema", "Garden"],
+
+    superhost: true,
+    category: "HOUSE",
+    hostName: "Fahad",
+    propertyType: "HOUSE",
+    description:
+      "A comfortable home with a cinema lounge, warm lighting, and easy access to King Fahd Road.",
+    img: [
+      "https://images.unsplash.com/photo-1598928506311-c55ded91a20c?w=800&h=600&fit=crop",
+      "https://images.unsplash.com/photo-1554995207-c18c203602cb?w=800&h=600&fit=crop",
+    ],
+  },
+  {
+    id: "5",
+    title: "Apartment in King Fahd",
+    location: "Riyadh, Saudi Arabia",
+    price: 62,
+    pricePerNight: 62,
+    guests: 3,
+    rating: 4.85,
+    type: "APARTMENT",
+    amenities: ["Wifi", "Kitchen"],
+    superhost: true,
+    category: "APARTMENT",
+    hostName: "Noura",
+    propertyType: "APARTMENT",
+    description:
+      "A polished apartment with a quiet bedroom, wood floors, and a relaxed living area.",
+    img: [
+      "https://images.unsplash.com/photo-1560185127-6ed189bf02f4?w=800&h=600&fit=crop",
+      "https://images.unsplash.com/photo-1522708323590-d24dbb6b0267?w=800&h=600&fit=crop",
+    ],
+  },
+  {
+    id: "6",
+    title: "Apartment in Riyadh",
+    location: "Riyadh, Saudi Arabia",
+    price: 130,
+    pricePerNight: 130,
+    guests: 4,
+    rating: 5,
+    type: "APARTMENT",
+    amenities: ["Balcony", "Wifi"],
+    superhost: false,
+    category: "APARTMENT",
+    hostName: "Bandar",
+    propertyType: "APARTMENT",
+    description:
+      "A sunny apartment with a balcony view, soft bedroom textures, and modern amenities.",
+    img: [
+      "https://images.unsplash.com/photo-1560448204-e02f11c3d0e2?w=800&h=600&fit=crop",
+      "https://images.unsplash.com/photo-1484154218962-a197022b5858?w=800&h=600&fit=crop",
+    ],
+  },
+  {
+    id: "7",
+    title: "Apartment in Al Sulaimaniya",
+    location: "Riyadh, Saudi Arabia",
+    price: 177,
+    pricePerNight: 177,
+    guests: 2,
+    rating: 4.93,
+    type: "APARTMENT",
+    amenities: ["Living room", "Wifi"],
+    superhost: true,
+    category: "APARTMENT",
+    hostName: "Sara",
+    propertyType: "APARTMENT",
+    description:
+      "A bright city apartment with a cream lounge, dining nook, and a calm central location.",
+    img: [
+      "https://images.unsplash.com/photo-1560448204-603b3fc33ddc?w=800&h=600&fit=crop",
+      "https://images.unsplash.com/photo-1560185007-c5ca9d2c014d?w=800&h=600&fit=crop",
+    ],
+  },
+  {
+    id: "8",
+    title: "Apartment in Riyadh",
+    location: "Riyadh, Saudi Arabia",
+    price: 112,
+    pricePerNight: 112,
+    guests: 3,
+    rating: 4.97,
+    type: "APARTMENT",
+    amenities: ["Cozy lounge", "Kitchen"],
+    superhost: true,
+    category: "APARTMENT",
+    hostName: "Bandar",
+    propertyType: "APARTMENT",
+    description:
+      "An entire rental apartment with one bedroom, soft hotel-style bedding, and a cozy lounge.",
+    img: [
+      "https://images.unsplash.com/photo-1566665797739-1674de7a421a?w=800&h=600&fit=crop",
+      "https://images.unsplash.com/photo-1560184897-ae75f418493e?w=800&h=600&fit=crop",
+    ],
+  },
+  {
+    id: "9",
+    title: "Apartment in Al Yasmeen",
+    location: "Riyadh, Saudi Arabia",
+    price: 292,
+    pricePerNight: 292,
+    guests: 6,
+    rating: 4.98,
+    type: "APARTMENT",
+    amenities: ["Entertainment", "Workspace"],
+    superhost: true,
+    category: "APARTMENT",
+    hostName: "Maha",
+    propertyType: "APARTMENT",
+    description:
+      "A refined apartment with a generous living room, entertainment wall, and soft neutral finishes.",
+    img: [
+      "https://images.unsplash.com/photo-1600585154340-be6161a56a0c?w=800&h=600&fit=crop",
+      "https://images.unsplash.com/photo-1600566753190-17f0baa2a6c3?w=800&h=600&fit=crop",
+    ],
+  },
+];

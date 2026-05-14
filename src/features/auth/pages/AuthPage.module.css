@@ -1,0 +1,162 @@
+.page {
+  position: relative;
+  width: 100%;
+  min-height: 100svh;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 24px;
+  overflow: hidden;
+  background:
+    linear-gradient(rgba(0, 0, 0, 0.46), rgba(0, 0, 0, 0.36)),
+    url("../../../assets/hero.png") center / cover no-repeat;
+  box-sizing: border-box;
+}
+
+.card {
+  position: relative;
+  z-index: 1;
+  width: min(100%, 410px);
+  display: flex;
+  flex-direction: column;
+  gap: 18px;
+  padding: 32px;
+  border: 1px solid rgba(255, 255, 255, 0.58);
+  border-radius: 16px;
+  background: rgba(255, 255, 255, 0.95);
+  box-shadow: 0 18px 48px rgba(0, 0, 0, 0.24);
+  box-sizing: border-box;
+  text-align: left;
+}
+
+.header {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+  text-align: center;
+}
+
+.title {
+  margin: 0;
+  color: #08060d;
+  font-size: 28px;
+  font-weight: 700;
+  line-height: 1.16;
+}
+
+.subtitle {
+  margin: 0;
+  color: #6b6375;
+  font-size: 15px;
+  line-height: 1.45;
+}
+
+.form {
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+}
+
+.input {
+  width: 100%;
+  min-height: 48px;
+  padding: 12px 14px;
+  border: 1px solid #ddd8df;
+  border-radius: 10px;
+  background: #fff;
+  color: #08060d;
+  font: inherit;
+  font-size: 15px;
+  box-sizing: border-box;
+  outline: none;
+  transition:
+    border-color 160ms ease,
+    box-shadow 160ms ease;
+}
+
+.input::placeholder {
+  color: #8a8392;
+}
+
+.input:focus {
+  border-color: var(--airbnb-accent, #ff385c);
+  box-shadow: 0 0 0 4px rgba(255, 56, 92, 0.16);
+}
+
+.button {
+  width: 100%;
+  min-height: 48px;
+  padding: 12px 16px;
+  border: 0;
+  border-radius: 10px;
+  background: var(--airbnb-accent, #ff385c);
+  color: #fff;
+  font: inherit;
+  font-size: 15px;
+  font-weight: 800;
+  cursor: pointer;
+  transition:
+    transform 160ms ease,
+    box-shadow 160ms ease,
+    background 160ms ease;
+}
+
+.button:hover {
+  background: #e71d48;
+  box-shadow: 0 10px 22px rgba(255, 56, 92, 0.28);
+  transform: translateY(-1px);
+}
+
+.button:active {
+  transform: translateY(0);
+}
+
+.divider {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  color: #8a8392;
+  font-size: 14px;
+  text-align: center;
+}
+
+.divider::before,
+.divider::after {
+  content: "";
+  height: 1px;
+  flex: 1;
+  background: #e5e4e7;
+}
+
+.switchButton {
+  width: 100%;
+  min-height: 42px;
+  padding: 10px;
+  border: 0;
+  border-radius: 10px;
+  background: transparent;
+  color: var(--airbnb-accent, #ff385c);
+  font: inherit;
+  font-size: 15px;
+  font-weight: 800;
+  cursor: pointer;
+}
+
+.switchButton:hover {
+  background: rgba(255, 56, 92, 0.08);
+}
+
+@media (max-width: 520px) {
+  .page {
+    padding: 18px;
+  }
+
+  .card {
+    padding: 24px;
+    border-radius: 14px;
+  }
+
+  .title {
+    font-size: 24px;
+  }
+}

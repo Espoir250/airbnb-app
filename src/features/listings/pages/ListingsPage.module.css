@@ -1,0 +1,14 @@
+.page {
+  min-height: 100vh;
+}
+
+.content {
+  padding: 20px;
+}
+
+.refreshing {
+  margin: 0 0 12px;
+  color: #6b7280;
+  font-size: 14px;
+  text-align: left;
+}
