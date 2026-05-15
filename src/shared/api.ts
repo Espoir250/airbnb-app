@@ -1,7 +1,7 @@
 import type { Listing } from "../features/listings/types";
 import { listings as fallbackListings } from "../data/listings";
 
-const API_BASE_URL = import.meta.env.VITE_API_URL ?? "";
+const API_BASE_URL = (import.meta.env.VITE_API_URL as string ?? "").replace(/\/api\/v1\/?$/, "");
 const DEFAULT_LISTING_IMAGE =
   "https://images.unsplash.com/photo-1566073771259-6a8506099945?w=800&h=600&fit=crop";
 
@@ -138,7 +138,9 @@ export type CreateListingInput = {
 };
 
 function apiUrl(path: string) {
-  return `${API_BASE_URL}${path}`;
+  const url = `${API_BASE_URL}${path}`;
+  // Prevent double /api/v1 if both base and path have it
+  return url.replace("/api/v1/api/v1/", "/api/v1/");
 }
 
 async function parseJson<T>(response: Response): Promise<T> {

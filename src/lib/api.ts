@@ -108,7 +108,9 @@ export type AdminStats = {
 };
 
 function apiUrl(path: string) {
-  return `${API_BASE_URL}${path}`;
+  const url = `${API_BASE_URL}${path}`;
+  // Prevent double /api/v1 if both base and path have it
+  return url.replace("/api/v1/api/v1/", "/api/v1/");
 }
 
 async function parseJson<T>(response: Response): Promise<T> {
