@@ -26,8 +26,9 @@ type AiResponse = {
 
 function aiUrl(path: string) {
   if (/^https?:\/\//i.test(path)) return path;
-  const base = import.meta.env.VITE_API_URL ?? "";
-  return `${base}${path}`;
+  const base = (import.meta.env.VITE_API_URL as string ?? "").replace(/\/api\/v1\/?$/, "");
+  const url = `${base}${path}`;
+  return url.replace("/api/v1/api/v1/", "/api/v1/");
 }
 
 function listingMatchesRecommendation(listing: Listing, rec: AiRecommendation) {

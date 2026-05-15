@@ -17,8 +17,9 @@ export function useUploadAvatar() {
 
     try {
       const token = localStorage.getItem("token");
+      const baseUrl = (import.meta.env.VITE_API_URL as string ?? "").replace(/\/api\/v1\/?$/, "");
       const res = await fetch(
-        `${import.meta.env.VITE_API_URL}/api/v1/upload/${user.id}/avatar`,
+        `${baseUrl}/api/v1/upload/${user.id}/avatar`,
         {
           method: "POST",
           headers: { Authorization: `Bearer ${token}` },
