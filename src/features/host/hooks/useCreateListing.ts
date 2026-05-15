@@ -13,7 +13,7 @@ import {
   categoryToBackendType,
   legacyCategoryToBackendType,
   listingPayload,
-  uploadListingImage,
+  uploadListingImages,
 } from "../utils/listingPayload";
 
 export function useCreateListing() {
@@ -27,19 +27,24 @@ export function useCreateListing() {
         throw new Error("Please log in as a host before creating a listing.");
       }
 
-      const file = input.image?.[0] as File | undefined;
-      const imageUrl = await uploadListingImage(file);
+      // Upload all selected images to Cloudinary
+      const files = input.image ? Array.from(input.image as FileList) as File[] : [];
+      const allImageUrls = await uploadListingImages(files);
+      const primaryImageUrl = allImageUrls[0];
+
       const payload = listingPayload(
         input,
-        imageUrl,
+        primaryImageUrl,
         categoryToBackendType(input.category),
         user,
+        allImageUrls,
       );
       const legacyPayload = listingPayload(
         input,
-        imageUrl,
+        primaryImageUrl,
         legacyCategoryToBackendType(input.category),
         user,
+        allImageUrls,
       );
 
       let body: BackendListing | { data: BackendListing } | undefined;

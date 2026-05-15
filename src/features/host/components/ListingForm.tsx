@@ -18,7 +18,7 @@ export function ListingForm({
   submitLabel,
   onSubmit,
 }: Props) {
-  const [preview, setPreview] = useState(listing?.img?.[0] ?? "");
+  const [previews, setPreviews] = useState<string[]>(listing?.img ?? []);
 
   const {
     register,
@@ -39,6 +39,19 @@ export function ListingForm({
         listing?.availableFrom ?? new Date().toISOString().slice(0, 10),
     },
   });
+
+  function handleImageChange(event: React.ChangeEvent<HTMLInputElement>) {
+    const files = Array.from(event.target.files ?? []).slice(0, 3);
+    if (files.length === 0) return;
+
+    // Rebuild FileList with only the first 3 so schema validation passes
+    const dt = new DataTransfer();
+    files.forEach((f) => dt.items.add(f));
+    event.target.files = dt.files;
+
+    const urls = files.map((file) => URL.createObjectURL(file));
+    setPreviews(urls);
+  }
 
   return (
     <form className="formStack wideForm" onSubmit={handleSubmit(onSubmit)}>
@@ -112,24 +125,65 @@ export function ListingForm({
         )}
       </label>
       <label>
-        Image
+        Images{" "}
+        <span style={{ fontWeight: "normal", fontSize: "0.85em", color: "#888" }}>
+          (exactly 3 images required — 1 cover, 2 details)
+        </span>
         <input
           type="file"
           accept="image/*"
-          {...register("image", {
-            onChange: (event) => {
-              const file = event.target.files?.[0];
-              if (file) setPreview(URL.createObjectURL(file));
-            },
-          })}
+          multiple
+          {...register("image", { onChange: handleImageChange })}
         />
         {errors.image && (
           <p className="formError">{errors.image.message?.toString()}</p>
         )}
       </label>
-      {preview && (
-        <img className="formImagePreview" src={preview} alt="Listing preview" />
+
+      {previews.length > 0 && (
+        <div
+          style={{
+            display: "grid",
+            gridTemplateColumns: "repeat(auto-fill, minmax(120px, 1fr))",
+            gap: "8px",
+            marginTop: "8px",
+          }}
+        >
+          {previews.map((src, i) => (
+            <div key={i} style={{ position: "relative" }}>
+              <img
+                src={src}
+                alt={`Preview ${i + 1}`}
+                style={{
+                  width: "100%",
+                  aspectRatio: "1",
+                  objectFit: "cover",
+                  borderRadius: "8px",
+                  border:
+                    i === 0
+                      ? "2px solid var(--color-primary, #e91e8c)"
+                      : "2px solid transparent",
+                }}
+              />
+              <span
+                style={{
+                  position: "absolute",
+                  bottom: "4px",
+                  left: "4px",
+                  background: "rgba(0,0,0,0.6)",
+                  color: "#fff",
+                  fontSize: "10px",
+                  padding: "2px 6px",
+                  borderRadius: "4px",
+                }}
+              >
+                {i === 0 ? "Cover (Home Page)" : `Detail Image ${i}`}
+              </span>
+            </div>
+          ))}
+        </div>
       )}
+
       <button className="appButton" disabled={submitting}>
         {submitting ? "Saving..." : submitLabel}
       </button>

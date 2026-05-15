@@ -47,7 +47,7 @@ function fileToDataUrl(file: File) {
   });
 }
 
-export async function uploadListingImage(file?: File) {
+export async function uploadListingImage(file?: File): Promise<string | undefined> {
   if (!file) return undefined;
 
   const cloudName = import.meta.env.VITE_CLOUDINARY_CLOUD_NAME;
@@ -60,10 +60,7 @@ export async function uploadListingImage(file?: File) {
 
     const response = await fetch(
       `https://api.cloudinary.com/v1_1/${cloudName}/image/upload`,
-      {
-        method: "POST",
-        body,
-      },
+      { method: "POST", body },
     );
     const result = (await response.json().catch(() => ({}))) as {
       secure_url?: string;
@@ -72,9 +69,7 @@ export async function uploadListingImage(file?: File) {
     };
 
     if (!response.ok) {
-      throw new Error(
-        result.error?.message || "Could not upload listing image.",
-      );
+      throw new Error(result.error?.message || "Could not upload listing image.");
     }
 
     return result.secure_url ?? result.url;
@@ -83,23 +78,26 @@ export async function uploadListingImage(file?: File) {
   return fileToDataUrl(file);
 }
 
-export function imageFields(imageUrl?: string) {
-  if (!imageUrl) return {};
+// Upload multiple files and return all URLs
+export async function uploadListingImages(files: File[]): Promise<string[]> {
+  if (files.length === 0) return [];
+  const urls = await Promise.all(files.map((file) => uploadListingImage(file)));
+  return urls.filter((url): url is string => Boolean(url));
+}
 
-  // Send multiple common field names because backend schemas may differ.
-  // This keeps listing creation working even if it expects e.g. `photos`
-  // instead of `images`, or `photoUrl` instead of `imageUrl`.
+export function imageFields(primaryUrl?: string, allUrls?: string[]) {
+  if (!primaryUrl) return {};
+
+  const imageList = allUrls && allUrls.length > 0 ? allUrls : [primaryUrl];
+
   return {
-    // Current/primary fields
-    image: imageUrl,
-    imageUrl: imageUrl,
-    coverImage: imageUrl,
-    images: [imageUrl],
-
-    // Alternate common naming
-    photo: imageUrl,
-    photoUrl: imageUrl,
-    photos: [imageUrl],
+    image: primaryUrl,
+    imageUrl: primaryUrl,
+    coverImage: primaryUrl,
+    images: imageList,
+    photo: primaryUrl,
+    photoUrl: primaryUrl,
+    photos: imageList,
   };
 }
 
@@ -108,6 +106,7 @@ export function listingPayload(
   imageUrl: string | undefined,
   type: BackendListingType,
   host?: { id?: string; name?: string; username?: string },
+  allImageUrls?: string[],
 ) {
   return {
     title: input.title,
@@ -130,6 +129,6 @@ export function listingPayload(
         }
       : {}),
     amenities: [],
-    ...imageFields(imageUrl),
+    ...imageFields(imageUrl, allImageUrls),
   };
 }

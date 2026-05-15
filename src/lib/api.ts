@@ -270,8 +270,18 @@ function hostNameForListing(listing: BackendListing) {
     undefined
   );
 }
-
 export function mapListing(listing: BackendListing): Listing {
+  console.log("🔍 full listing from backend:", listing);
+  console.log("🖼️ image fields:", {
+
+    images: listing.images,
+    image: listing.image,
+    imageUrl: listing.imageUrl,
+    photo: listing.photo,
+    photoUrl: listing.photoUrl,
+    coverImage: listing.coverImage,
+  });
+
   const rating = ratingForListing(listing);
   const pricePerNight = Number(listing.pricePerNight ?? listing.price ?? 0);
   const normalizedType = normalizeType(listing.type);

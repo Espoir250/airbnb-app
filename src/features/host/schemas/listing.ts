@@ -1,6 +1,6 @@
 import { z } from "zod";
 
-const maxFileSize = 5 * 1024 * 1024;
+const maxFileSize = 20 * 1024 * 1024; // 20MB
 
 export const listingSchema = z.object({
   title: z.string().min(10, "Title must be at least 10 characters"),
@@ -14,8 +14,17 @@ export const listingSchema = z.object({
   availableFrom: z.string().min(1, "Available date is required"),
   image: z
     .any()
-    .optional()
-    .refine((files) => !files?.[0] || files[0].size <= maxFileSize, "Image must be under 5MB"),
+    .refine(
+      (files) => files && files.length === 3,
+      "You must upload exactly 3 images (1 cover, 2 for detail page gallery)"
+    )
+    .refine(
+      (files) =>
+        !files ||
+        files.length === 0 ||
+        Array.from(files).every((f: any) => f.size <= maxFileSize),
+      "Each image must be under 20MB"
+    ),
 });
 
 export type ListingFormInput = z.infer<typeof listingSchema>;
