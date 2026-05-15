@@ -1,6 +1,6 @@
 import type { Listing } from "../features/listings/types";
 
-const API_BASE_URL = import.meta.env.VITE_API_URL;
+const API_BASE_URL = (import.meta.env.VITE_API_URL as string ?? "").replace(/\/api\/v1\/?$/, "");
 const DEFAULT_LISTING_IMAGE =
   "https://images.unsplash.com/photo-1566073771259-6a8506099945?w=800&h=600&fit=crop";
 
