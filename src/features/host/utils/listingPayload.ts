@@ -10,18 +10,25 @@ export type ListingCategory = (typeof LISTING_CATEGORIES)[number]["value"];
 
 export type BackendListingType = "APARTMENT" | "HOUSE" | "HOTEL" | "VILLA";
 
-export function categoryToBackendType(category: ListingCategory): BackendListingType {
+export function categoryToBackendType(
+  category: ListingCategory,
+): BackendListingType {
   if (category === "HOTEL") return "HOTEL";
   return category;
 }
 
-export function legacyCategoryToBackendType(category: ListingCategory): BackendListingType {
+export function legacyCategoryToBackendType(
+  category: ListingCategory,
+): BackendListingType {
   if (category === "HOTEL") return "VILLA";
   return category;
 }
 
 export function categoryLabel(category?: string) {
-  return LISTING_CATEGORIES.find((option) => option.value === category)?.label ?? "Hotel";
+  return (
+    LISTING_CATEGORIES.find((option) => option.value === category)?.label ??
+    "Hotel"
+  );
 }
 
 export function normalizeFormCategory(category?: string): ListingCategory {
@@ -65,7 +72,9 @@ export async function uploadListingImage(file?: File) {
     };
 
     if (!response.ok) {
-      throw new Error(result.error?.message || "Could not upload listing image.");
+      throw new Error(
+        result.error?.message || "Could not upload listing image.",
+      );
     }
 
     return result.secure_url ?? result.url;
@@ -75,14 +84,23 @@ export async function uploadListingImage(file?: File) {
 }
 
 export function imageFields(imageUrl?: string) {
-  return imageUrl
-    ? {
-        image: imageUrl,
-        imageUrl,
-        coverImage: imageUrl,
-        images: [imageUrl],
-      }
-    : {};
+  if (!imageUrl) return {};
+
+  // Send multiple common field names because backend schemas may differ.
+  // This keeps listing creation working even if it expects e.g. `photos`
+  // instead of `images`, or `photoUrl` instead of `imageUrl`.
+  return {
+    // Current/primary fields
+    image: imageUrl,
+    imageUrl: imageUrl,
+    coverImage: imageUrl,
+    images: [imageUrl],
+
+    // Alternate common naming
+    photo: imageUrl,
+    photoUrl: imageUrl,
+    photos: [imageUrl],
+  };
 }
 
 export function listingPayload(
