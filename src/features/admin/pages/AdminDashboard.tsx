@@ -1,5 +1,5 @@
 import { useRef, useState } from "react";
-import { FaBuilding, FaCalendarCheck, FaChartLine, FaEnvelope, FaHome, FaPlus, FaSignOutAlt, FaSlidersH, FaTrash, FaUserPlus, FaUsers } from "react-icons/fa";
+import { FaBuilding, FaCalendarCheck, FaChartLine, FaEnvelope, FaPlus, FaSignOutAlt, FaSlidersH, FaTrash, FaUserPlus, FaUsers } from "react-icons/fa";
 import { Link, useNavigate } from "react-router-dom";
 import { formatCurrency } from "../../../shared/currency";
 import { useAuth } from "../../auth/hooks/useAuth";
