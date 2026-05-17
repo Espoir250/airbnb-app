@@ -1,3 +1,4 @@
+import { FaCheck, FaTimes } from "react-icons/fa";
 import { formatCurrency } from "../../../shared/currency";
 import {
   useApprove,
@@ -38,11 +39,11 @@ export function ModerationQueue() {
                   <strong>{formatCurrency(listing.price)} / night</strong>
                 </div>
                 <div className="buttonRow">
-                  <button onClick={() => approve.mutate(listing.id)}>
-                    Approve
+                  <button className="btn-approve" onClick={() => approve.mutate(listing.id)}>
+                    <FaCheck /> Approve
                   </button>
-                  <button onClick={() => reject.mutate(listing.id)}>
-                    Reject
+                  <button className="btn-danger" onClick={() => reject.mutate(listing.id)}>
+                    <FaTimes /> Reject
                   </button>
                 </div>
               </article>

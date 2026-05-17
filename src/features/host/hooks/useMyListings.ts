@@ -75,23 +75,9 @@ export function useHostBookings() {
     queryKey: ["host-bookings", user?.id],
     enabled: !!user?.id,
     queryFn: async () => {
-      const body = await api.get<any[] | PaginatedResponse<any>>("/api/v1/bookings");
+      const body = await api.get<any[] | PaginatedResponse<any>>(`/api/v1/bookings/host/${user!.id}`);
 
-      return extractArray(body)
-        .filter((booking: any) => {
-          const hostId = booking.hostId ?? booking.listing?.hostId ?? booking.listing?.host?.id;
-          const hostName = booking.listing?.hostName ?? booking.listing?.host?.name;
-          const hostUsername = booking.listing?.host?.username;
-          const hostEmail = booking.listing?.host?.email;
-
-          return (
-            sameValue(hostId, user!.id) ||
-            sameValue(hostName, user!.name) ||
-            sameValue(hostUsername, user!.username) ||
-            sameValue(hostEmail, user!.email)
-          );
-        })
-        .map(mapBooking);
+      return extractArray(body).map(mapBooking);
     },
   });
 }

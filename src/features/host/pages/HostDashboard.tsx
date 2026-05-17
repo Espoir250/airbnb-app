@@ -1,5 +1,5 @@
 import { useRef, useState } from "react";
-import { FaBuilding, FaCalendarCheck, FaChartLine, FaEnvelope, FaMoneyBillWave, FaPlus, FaSignOutAlt, FaSlidersH } from "react-icons/fa";
+import { FaBuilding, FaCalendarCheck, FaChartLine, FaCheck, FaEdit, FaEnvelope, FaEye, FaMoneyBillWave, FaPlus, FaSignOutAlt, FaSlidersH, FaTimes, FaTrash } from "react-icons/fa";
 import { Link, useLocation, useNavigate } from "react-router-dom";
 import { formatCurrency } from "../../../shared/currency";
 import { useAuth } from "../../auth/hooks/useAuth";
@@ -14,6 +14,7 @@ function statusClass(status?: string) {
 
 export function HostDashboard() {
   const [activePanel, setActivePanel] = useState("overview");
+  const [selectedListing, setSelectedListing] = useState<string | null>(null);
   const [avatarUrl, setAvatarUrl] = useState("");
   const fileInputRef = useRef<HTMLInputElement>(null);
   const { user, logout } = useAuth();
@@ -25,6 +26,8 @@ export function HostDashboard() {
   const deleteListing = useDeleteListing();
   const approveBooking = useUpdateHostBookingStatus("confirmed");
   const declineBooking = useUpdateHostBookingStatus("declined");
+
+  const displayedBookings = selectedListing ? bookings.filter((b) => String(b.listingId) === selectedListing) : bookings;
 
   const totalEarnings = bookings.filter((b) => b.status?.toLowerCase() === "confirmed").reduce((t, b) => t + b.totalPrice, 0);
   const pendingBookings = bookings.filter((b) => b.status?.toLowerCase() === "pending").length;
@@ -44,7 +47,8 @@ export function HostDashboard() {
 
   function showPanel(panel: string) {
     setActivePanel(panel);
-    navigate("/host", { replace: true });
+    setSelectedListing(null);
+    navigate(`/host#${panel}`, { replace: true });
   }
 
   function handleLogout() {
@@ -100,7 +104,7 @@ export function HostDashboard() {
             </section>
             <section className="metricGrid">
               <article className="metricCard"><span><FaBuilding /></span><strong>{listings.length}</strong><p>Listings Created</p></article>
-              <article className="metricCard"><span><FaCalendarCheck /></span><strong>{bookings.length}</strong><p>Reservations</p></article>
+              <article className="metricCard" onClick={() => showPanel("reservations")} style={{ cursor: "pointer" }}><span><FaCalendarCheck /></span><strong>{bookings.length}</strong><p>Reservations</p></article>
               <article className="metricCard"><span><FaMoneyBillWave /></span><strong>{formatCurrency(totalEarnings)}</strong><p>Total Earnings</p></article>
               <Link className="metricCard metricLink" to="/host/listings/new"><span><FaPlus /></span><strong>Add</strong><p>Create Listing</p></Link>
             </section>
@@ -148,11 +152,11 @@ export function HostDashboard() {
                             <span><span className={statusClass(listing.status)}>{listing.status ?? "draft"}</span></span>
                             <span>{formatCurrency(listing.price)} / night</span>
                             <div className="buttonRow">
-                              <Link to={`/listing/${listing.id}`}>View</Link>
-                              <Link to={`/host/listings/${listing.id}/edit`}>Edit</Link>
+                              <Link to={`/listing/${listing.id}`}><FaEye /> View</Link>
+                              <Link to={`/host/listings/${listing.id}/edit`}><FaEdit /> Edit</Link>
                               <button type="button"
                                 onClick={() => { if (window.confirm("Delete this listing?")) deleteListing.mutate(listing.id); }}>
-                                Delete
+                                <FaTrash /> Delete
                               </button>
                             </div>
                           </div>
@@ -170,14 +174,32 @@ export function HostDashboard() {
           <section className="dashboardPanel">
             <div className="sectionHeader">
               <div><p className="eyebrow">Requests</p><h2>Guest bookings</h2></div>
+              <div className="buttonRow">
+                <select 
+                  className="appButton" 
+                  style={{ backgroundColor: "#fff", color: "#111827", border: "1px solid #d7d4dd" }}
+                  value={selectedListing ?? ""} 
+                  onChange={(e) => setSelectedListing(e.target.value || null)}
+                >
+                  <option value="">All your listings</option>
+                  {listings.map(l => (
+                    <option key={l.id} value={l.id}>{l.title}</option>
+                  ))}
+                </select>
+                {selectedListing && (
+                  <button className="appButton" onClick={() => setSelectedListing(null)}>
+                    Clear Filter
+                  </button>
+                )}
+              </div>
             </div>
-            {bookings.length === 0 ? <p className="emptyState">No bookings for your listings yet.</p> : (
+            {displayedBookings.length === 0 ? <p className="emptyState">No bookings for {selectedListing ? "this listing" : "your listings"} yet.</p> : (
               <div className="dataTable dataTableBookings">
                 <div className="dataTableHead">
                   <span>Listing</span><span>Guest</span><span>Dates</span>
                   <span>Status</span><span>Total</span><span>Action</span>
                 </div>
-                {bookings.map((booking) => (
+                {displayedBookings.map((booking) => (
                   <div className="dataTableRow" key={booking.id}>
                     <span>{booking.listingTitle}</span>
                     <span>{booking.guestName ?? "Guest"}</span>
@@ -187,8 +209,8 @@ export function HostDashboard() {
                     <span>
                       {booking.status?.toLowerCase() === "pending" ? (
                         <div className="buttonRow">
-                          <button type="button" onClick={() => approveBooking.mutate(booking.id)}>Approve</button>
-                          <button type="button" onClick={() => declineBooking.mutate(booking.id)}>Decline</button>
+                          <button type="button" className="btn-approve" onClick={() => approveBooking.mutate(booking.id)}><FaCheck /> Approve</button>
+                          <button type="button" onClick={() => declineBooking.mutate(booking.id)}><FaTimes /> Decline</button>
                         </div>
                       ) : "No action"}
                     </span>
