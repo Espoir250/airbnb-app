@@ -10,7 +10,8 @@ export function RegisterPage() {
   const [name, setName] = useState("");
   const [username, setUsername] = useState("");
   const [phone, setPhone] = useState("");
-  const [role, setRole] = useState<"GUEST" | "HOST">("GUEST");
+  const [role, setRole] = useState<"GUEST" | "HOST" | "ADMIN">("GUEST");
+  const [adminSecret, setAdminSecret] = useState("");
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
 
@@ -18,7 +19,7 @@ export function RegisterPage() {
     e.preventDefault();
 
     try {
-      await registerUser({ name, username, phone, role, email, password });
+      await registerUser({ name, username, phone, role, email, password, adminSecret });
       toast.success("Account created successfully. You can log in now.");
       navigate("/login");
     } catch (err: any) {
@@ -80,12 +81,24 @@ export function RegisterPage() {
           <select
             className={styles.input}
             value={role}
-            onChange={(e) => setRole(e.target.value as "GUEST" | "HOST")}
+            onChange={(e) => setRole(e.target.value as "GUEST" | "HOST" | "ADMIN")}
             required
           >
             <option value="GUEST">Guest</option>
             <option value="HOST">Host</option>
+            <option value="ADMIN">Admin</option>
           </select>
+
+          {role === "ADMIN" && (
+            <input
+              className={styles.input}
+              type="password"
+              placeholder="Admin Secret Code"
+              value={adminSecret}
+              onChange={(e) => setAdminSecret(e.target.value)}
+              required={role === "ADMIN"}
+            />
+          )}
 
           <input
             className={styles.input}

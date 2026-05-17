@@ -79,9 +79,10 @@ type RegisterInput = {
   name: string;
   username: string;
   phone: string;
-  role: "GUEST" | "HOST";
+  role: "GUEST" | "HOST" | "ADMIN";
   email: string;
   password: string;
+  adminSecret?: string;
 };
 
 type CreateBookingInput = {
