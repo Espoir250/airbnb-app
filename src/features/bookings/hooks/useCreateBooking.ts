@@ -40,16 +40,7 @@ export function useCreateBooking(listingId: string) {
         totalPrice: input.totalPrice,
       };
 
-      let lastError: Error | null = null;
-      for (const path of ["/api/v1/bookings", "/api/bookings"]) {
-        try {
-          return await api.post(path, payload);
-        } catch (error) {
-          lastError = error instanceof Error ? error : new Error("Booking failed");
-        }
-      }
-
-      throw lastError ?? new Error("Booking failed");
+      return api.post("/api/v1/bookings", payload);
     },
     onSuccess: () => {
       queryClient.invalidateQueries({ queryKey: ["bookings", "me"] });

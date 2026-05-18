@@ -41,6 +41,8 @@ export function BookingWizard({ listing }: { listing: Listing }) {
   const { isAuthenticated, user } = useAuth();
 
   const createBooking = useCreateBooking(listing.id);
+  const listingStatus = listing.status?.toUpperCase();
+  const isListingBookable = !listingStatus || listingStatus === "APPROVED";
 
   const nights = useMemo(
     () => nightsBetween(data.checkIn, data.checkOut),
@@ -101,6 +103,12 @@ export function BookingWizard({ listing }: { listing: Listing }) {
           <button className="appButton" type="button" onClick={() => navigate("/login")}>
             Log in to book
           </button>
+        </div>
+      ) : !isListingBookable ? (
+        <div className="formStack">
+          <p className="bookingNotice">
+            This stay is not available for booking yet.
+          </p>
         </div>
       ) : (
         <>
