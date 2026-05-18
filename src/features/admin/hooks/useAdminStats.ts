@@ -60,10 +60,8 @@ export function usePendingListings() {
   return useQuery({
     queryKey: ["listings", "pending"],
     queryFn: async () => {
-      const body = await api.get<ListResponse<BackendListing>>("/api/v1/listings");
-      return extractArray(body)
-        .filter((listing) => listing.status?.toLowerCase() === "pending")
-        .map(mapListing);
+      const body = await api.get<ListResponse<BackendListing>>("/api/v1/listings/admin/pending");
+      return extractArray(body).map(mapListing);
     },
   });
 }

@@ -51,7 +51,7 @@ export function useMyListings() {
     enabled: !!user?.id,
     queryFn: async () => {
       const body = await api.get<BackendListing[] | PaginatedResponse<BackendListing>>(
-        "/api/v1/listings",
+        `/api/v1/listings/host/${user!.id}`,
       );
 
       return extractArray(body)
