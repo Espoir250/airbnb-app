@@ -1,5 +1,5 @@
 import { useRef, useState } from "react";
-import { FaBuilding, FaCalendarCheck, FaChartLine, FaCheck, FaEdit, FaEnvelope, FaEye, FaMoneyBillWave, FaPlus, FaSignOutAlt, FaSlidersH, FaTimes, FaTrash } from "react-icons/fa";
+import { FaBuilding, FaCalendarCheck, FaChartLine, FaCheck, FaEdit, FaEnvelope, FaEye, FaHome, FaMoneyBillWave, FaPlus, FaSignOutAlt, FaSlidersH, FaTimes, FaTrash } from "react-icons/fa";
 import { Link, useLocation, useNavigate } from "react-router-dom";
 import { formatCurrency } from "../../../shared/currency";
 import { useAuth } from "../../auth/hooks/useAuth";
@@ -10,6 +10,14 @@ import { LISTING_CATEGORIES, categoryLabel, normalizeFormCategory } from "../uti
 
 function statusClass(status?: string) {
   return `statusPill status-${(status ?? "draft").toLowerCase()}`;
+}
+
+function statusLabel(status?: string) {
+  const normalized = status?.toUpperCase();
+  if (normalized === "APPROVED" || normalized === "PUBLISHED") return "Active";
+  if (normalized === "PENDING") return "Pending";
+  if (normalized === "REJECTED") return "Rejected";
+  return status ?? "Draft";
 }
 
 export function HostDashboard() {
@@ -31,9 +39,9 @@ export function HostDashboard() {
 
   const totalEarnings = bookings.filter((b) => b.status?.toLowerCase() === "confirmed").reduce((t, b) => t + b.totalPrice, 0);
   const pendingBookings = bookings.filter((b) => b.status?.toLowerCase() === "pending").length;
-  const categorizedListings = LISTING_CATEGORIES.map((category) => ({
+  const categoryCounts = LISTING_CATEGORIES.map((category) => ({
     ...category,
-    listings: listings.filter((l) => normalizeFormCategory(l.category ?? l.type) === category.value),
+    count: listings.filter((l) => normalizeFormCategory(l.category ?? l.type) === category.value).length,
   }));
   const routedPanel = hash === "#reservations" ? "reservations" : hash === "#listings" ? "listings" : activePanel;
   const displayAvatar = avatarUrl || (user as any)?.avatar || "";
@@ -60,19 +68,23 @@ export function HostDashboard() {
     <main className="dashboardShell proDashboard">
       <aside className="dashboardSidebar">
 
-        {/* ✅ Avatar replaces brand logo */}
-        <div className="dashboardBrand" style={{ flexDirection: "column", alignItems: "center", gap: 8, cursor: "pointer" }}
-          onClick={() => fileInputRef.current?.click()}>
+        <div className="dashboardBrand">
+          <span className="hostBrandMark"><FaHome /></span>
+          <strong>Stays</strong>
+        </div>
+
+        <div className="hostProfileButton" onClick={() => fileInputRef.current?.click()}>
           {displayAvatar ? (
-            <img src={displayAvatar} alt="Avatar"
-              style={{ width: 56, height: 56, borderRadius: "50%", objectFit: "cover", border: "2px solid #ff385c" }} />
+            <img src={displayAvatar} alt="Avatar" />
           ) : (
-            <div style={{ width: 56, height: 56, borderRadius: "50%", background: "#ff385c", display: "flex",
-              alignItems: "center", justifyContent: "center", color: "#fff", fontSize: 22, fontWeight: 700 }}>
+            <span>
               {user?.name?.[0]?.toUpperCase() ?? "H"}
-            </div>
+            </span>
           )}
-          <strong style={{ fontSize: 13 }}>{isUploading ? "Uploading..." : (user?.name ?? "Host")}</strong>
+          <div>
+            <strong>{isUploading ? "Uploading..." : (user?.name ?? "Host")}</strong>
+            <small>Host account</small>
+          </div>
           <input ref={fileInputRef} type="file" accept="image/*" style={{ display: "none" }} onChange={handleAvatarChange} />
         </div>
 
@@ -95,12 +107,13 @@ export function HostDashboard() {
 
         {routedPanel === "overview" && (
           <>
-            <section className="dashboardHero">
+            <section className="dashboardHero hostWelcomePanel">
               <div>
                 <p className="dashboardBadge">Host Dashboard</p>
                 <h1 className="dashboardTitle">Welcome back, {user?.name ?? "Host"}</h1>
                 <p className="dashboardLead">Track your listings, reservations, and earnings from one professional workspace.</p>
               </div>
+              <Link className="appButton hostHeroAction" to="/host/listings/new"><FaPlus /> Create Listing</Link>
             </section>
             <section className="metricGrid">
               <article className="metricCard"><span><FaBuilding /></span><strong>{listings.length}</strong><p>Listings Created</p></article>
@@ -112,58 +125,48 @@ export function HostDashboard() {
         )}
 
         {(routedPanel === "overview" || routedPanel === "listings") && (
-          <section className="dashboardPanel">
+          <section className="dashboardPanel hostListingsPanel">
             <div className="sectionHeader">
-              <div><p className="eyebrow">Inventory</p><h2>Your listings</h2></div>
+              <div><p className="eyebrow">Inventory</p><h2>My Listings</h2></div>
               <div className="buttonRow">
                 <p className="refreshNote">{pendingBookings} pending booking request{pendingBookings === 1 ? "" : "s"}</p>
-                <Link className="appButton" to="/host/listings/new"><FaPlus /> Add Listing</Link>
+                <Link className="appButton" to="/host/listings/new"><FaPlus /> Create Listing</Link>
               </div>
+            </div>
+            <div className="hostCategoryStrip">
+              {categoryCounts.map((category) => (
+                <span key={category.value}>{category.label}: <strong>{category.count}</strong></span>
+              ))}
             </div>
             {isLoading ? <div className="pageSpinner" /> : listings.length === 0 ? (
               <div className="emptyState"><h2>No listings yet</h2><p>Create your first place so guests can start booking.</p></div>
             ) : (
-              <div className="categoryTableStack">
-                {categorizedListings.map((group) => (
-                  <section className="categoryTableGroup" key={group.value}>
-                    <div className="categoryTableHeader">
-                      <h3>{group.label}</h3>
-                      <span>{group.listings.length} listing{group.listings.length === 1 ? "" : "s"}</span>
+              <div className="dataTable dataTableListings hostListingsTable">
+                <div className="dataTableHead">
+                  <span>Image</span><span>Title</span><span>Location</span>
+                  <span>Price</span><span>Status</span><span>Action</span>
+                </div>
+                {listings.map((listing) => (
+                  <div className="dataTableRow" key={listing.id}>
+                    <span className="hostListingImage">
+                      <img src={listing.img?.[0] ?? "https://placehold.co/80x64?text=Stay"} alt={listing.title} />
+                    </span>
+                    <span className="hostListingTitle">
+                      <strong>{listing.title}</strong>
+                      <small>{categoryLabel(listing.category ?? listing.type)}</small>
+                    </span>
+                    <span>{listing.location}</span>
+                    <span>{formatCurrency(listing.price)}</span>
+                    <span><span className={statusClass(listing.status)}>{statusLabel(listing.status)}</span></span>
+                    <div className="hostActionGroup">
+                      <Link className="hostActionView" to={`/listing/${listing.id}`}><FaEye /> View</Link>
+                      <Link className="hostActionEdit" to={`/host/listings/${listing.id}/edit`}><FaEdit /> Edit</Link>
+                      <button type="button"
+                        onClick={() => { if (window.confirm("Delete this listing?")) deleteListing.mutate(listing.id); }}>
+                        <FaTrash /> Delete
+                      </button>
                     </div>
-                    {group.listings.length === 0 ? (
-                      <p className="emptyState">No {group.label.toLowerCase()} listings yet.</p>
-                    ) : (
-                      <div className="dataTable dataTableListings">
-                        <div className="dataTableHead">
-                          <span>Listing</span><span>Location</span><span>Category</span>
-                          <span>Status</span><span>Price</span><span>Action</span>
-                        </div>
-                        {group.listings.map((listing) => (
-                          <div className="dataTableRow" key={listing.id}>
-                            <span className="tableListingCell">
-                              <img src={listing.img?.[0] ?? "https://placehold.co/80x64?text=Stay"} alt={listing.title} />
-                              <span>
-                                <strong>{listing.title}</strong>
-                                <small>Host: {listing.hostName ?? user?.name ?? "You"}</small>
-                              </span>
-                            </span>
-                            <span>{listing.location}</span>
-                            <span>{categoryLabel(listing.category ?? listing.type)}</span>
-                            <span><span className={statusClass(listing.status)}>{listing.status ?? "draft"}</span></span>
-                            <span>{formatCurrency(listing.price)} / night</span>
-                            <div className="buttonRow">
-                              <Link to={`/listing/${listing.id}`}><FaEye /> View</Link>
-                              <Link to={`/host/listings/${listing.id}/edit`}><FaEdit /> Edit</Link>
-                              <button type="button"
-                                onClick={() => { if (window.confirm("Delete this listing?")) deleteListing.mutate(listing.id); }}>
-                                <FaTrash /> Delete
-                              </button>
-                            </div>
-                          </div>
-                        ))}
-                      </div>
-                    )}
-                  </section>
+                  </div>
                 ))}
               </div>
             )}
