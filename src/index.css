@@ -2060,6 +2060,10 @@ h2 {
   margin-top: 0;
 }
 
+.dashboardBrand:has(.hostBrandMark) {
+  display: none !important;
+}
+
 @media (max-width: 1180px) {
   .dataTableHead {
     display: none;
