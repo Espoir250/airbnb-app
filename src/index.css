@@ -1370,17 +1370,6 @@ h2 {
   color: #111827;
 }
 
-.hostBrandMark {
-  display: inline-grid;
-  place-items: center;
-  width: 54px;
-  height: 54px;
-  border-radius: 17px;
-  background: #ff385c;
-  color: #fff;
-  box-shadow: 0 16px 28px rgba(255, 56, 92, 0.26);
-}
-
 .hostProfileButton {
   display: flex;
   align-items: center;
@@ -1980,4 +1969,109 @@ h2 {
   border: none;
   border-top: 1px solid #eaeaea;
   margin: 48px 0;
+}
+
+/* Dashboard containment fixes */
+.dashboardShell,
+.proDashboard {
+  width: 100%;
+  max-width: 100%;
+  overflow-x: hidden;
+  box-sizing: border-box;
+}
+
+.dashboardWorkspace,
+.dashboardHero,
+.dashboardPanel,
+.metricGrid,
+.dataTable,
+.dataTableRow,
+.dataTableHead,
+.appCard,
+.statsGrid,
+.cardGrid,
+.managementGrid {
+  min-width: 0;
+  max-width: 100%;
+  box-sizing: border-box;
+}
+
+.dashboardWorkspace {
+  width: 100%;
+  padding-inline: clamp(16px, 3vw, 36px);
+}
+
+.metricGrid {
+  grid-template-columns: repeat(auto-fit, minmax(min(220px, 100%), 1fr));
+}
+
+.metricCard {
+  min-width: 0;
+}
+
+.dataTable {
+  overflow-x: auto;
+}
+
+.dataTableHead,
+.dataTableRow {
+  width: 100%;
+}
+
+.dataTableListings .dataTableHead,
+.dataTableListings .dataTableRow {
+  grid-template-columns: minmax(180px, 1.35fr) minmax(120px, 1fr) minmax(88px, 0.6fr) minmax(96px, 0.6fr) minmax(100px, 0.7fr) minmax(0, auto);
+}
+
+.dataTableBookings .dataTableHead,
+.dataTableBookings .dataTableRow {
+  grid-template-columns: minmax(150px, 1.2fr) minmax(110px, 0.8fr) minmax(170px, 1.3fr) minmax(92px, 0.7fr) minmax(86px, 0.6fr) minmax(0, auto);
+}
+
+.dataTableGuestBookings .dataTableHead,
+.dataTableGuestBookings .dataTableRow {
+  grid-template-columns: minmax(170px, 1.4fr) minmax(145px, 1fr) minmax(118px, 0.8fr) minmax(92px, 0.7fr) minmax(86px, 0.6fr) minmax(0, auto);
+}
+
+.dataTableSavedListings .dataTableHead,
+.dataTableSavedListings .dataTableRow {
+  grid-template-columns: minmax(170px, 1.4fr) minmax(128px, 1fr) minmax(88px, 0.6fr) minmax(108px, 0.8fr) minmax(0, auto);
+}
+
+.hostListingsTable .dataTableHead,
+.hostListingsTable .dataTableRow {
+  grid-template-columns: 92px minmax(160px, 1.5fr) minmax(110px, 1fr) minmax(92px, 0.7fr) minmax(92px, 0.7fr) minmax(190px, auto);
+}
+
+.dataTableRow > span,
+.dataTableRow > div,
+.tableListingCell,
+.hostListingTitle {
+  min-width: 0;
+}
+
+.tableListingCell strong,
+.hostListingTitle strong,
+.dataTableRow > span {
+  overflow-wrap: anywhere;
+}
+
+.hostProfileButton {
+  margin-top: 0;
+}
+
+@media (max-width: 1180px) {
+  .dataTableHead {
+    display: none;
+  }
+
+  .dataTableRow,
+  .dataTableListings .dataTableRow,
+  .dataTableBookings .dataTableRow,
+  .dataTableGuestBookings .dataTableRow,
+  .dataTableSavedListings .dataTableRow,
+  .hostListingsTable .dataTableRow {
+    grid-template-columns: 1fr;
+    gap: 10px;
+  }
 }

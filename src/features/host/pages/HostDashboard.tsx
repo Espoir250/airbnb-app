@@ -1,5 +1,5 @@
 import { useRef, useState } from "react";
-import { FaBuilding, FaCalendarCheck, FaChartLine, FaCheck, FaEdit, FaEnvelope, FaEye, FaHome, FaMoneyBillWave, FaPlus, FaSignOutAlt, FaSlidersH, FaTimes, FaTrash } from "react-icons/fa";
+import { FaBuilding, FaCalendarCheck, FaChartLine, FaCheck, FaEdit, FaEnvelope, FaEye, FaMoneyBillWave, FaPlus, FaSignOutAlt, FaSlidersH, FaTimes, FaTrash } from "react-icons/fa";
 import { Link, useLocation, useNavigate } from "react-router-dom";
 import { formatCurrency } from "../../../shared/currency";
 import { useAuth } from "../../auth/hooks/useAuth";
@@ -67,11 +67,6 @@ export function HostDashboard() {
   return (
     <main className="dashboardShell proDashboard">
       <aside className="dashboardSidebar">
-
-        <div className="dashboardBrand">
-          <span className="hostBrandMark"><FaHome /></span>
-          <strong>Stays</strong>
-        </div>
 
         <div className="hostProfileButton" onClick={() => fileInputRef.current?.click()}>
           {displayAvatar ? (
