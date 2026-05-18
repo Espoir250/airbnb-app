@@ -1,5 +1,5 @@
 import { useRef, useState } from "react";
-import { FaBuilding, FaCalendarCheck, FaChartLine, FaEnvelope, FaPlus, FaSignOutAlt, FaSlidersH, FaTrash, FaUserPlus, FaUsers } from "react-icons/fa";
+import { FaBuilding, FaCalendarCheck, FaChartLine, FaEnvelope, FaPlus, FaSignOutAlt, FaTrash, FaUserPlus, FaUsers } from "react-icons/fa";
 import { Link, useNavigate } from "react-router-dom";
 import { formatCurrency } from "../../../shared/currency";
 import { useAuth } from "../../auth/hooks/useAuth";
@@ -59,7 +59,6 @@ export function AdminDashboard() {
           <button className={activePanel === "listings" ? "active" : ""} type="button" onClick={() => setActivePanel("listings")}><FaBuilding /> Listings</button>
           <button className={activePanel === "bookings" ? "active" : ""} type="button" onClick={() => setActivePanel("bookings")}><FaCalendarCheck /> Bookings</button>
           <button className={activePanel === "messages" ? "active" : ""} type="button" onClick={() => setActivePanel("messages")}><FaEnvelope /> Messages</button>
-          <button className={activePanel === "settings" ? "active" : ""} type="button" onClick={() => setActivePanel("settings")}><FaSlidersH /> Settings</button>
         </nav>
         <button className="sidebarLogout" type="button" onClick={handleLogout}>
           <FaSignOutAlt /> Logout
@@ -166,7 +165,7 @@ export function AdminDashboard() {
           </section>
         )}
 
-        {activePanel === "settings" && (
+        {false && (
           <section className="dashboardPanel">
             <div className="sectionHeader">
               <div><p className="eyebrow">Account</p><h2>Settings</h2></div>

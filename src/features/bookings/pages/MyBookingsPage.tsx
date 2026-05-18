@@ -1,5 +1,5 @@
 import { useRef, useState } from "react";
-import { FaCalendarCheck, FaChartLine, FaHeart, FaSearch, FaSignOutAlt, FaSlidersH } from "react-icons/fa";
+import { FaCalendarCheck, FaChartLine, FaHeart, FaSearch, FaSignOutAlt } from "react-icons/fa";
 import { Link, useLocation, useNavigate } from "react-router-dom";
 import { formatCurrency } from "../../../shared/currency";
 import { useAuth } from "../../auth/hooks/useAuth";
@@ -144,7 +144,6 @@ export function MyBookingsPage() {
           <button className={routedPanel === "bookings" ? "active" : ""} type="button" onClick={() => showPanel("bookings")}><FaCalendarCheck /> My Bookings</button>
           <button className={routedPanel === "saved" ? "active" : ""} type="button" onClick={() => showPanel("saved")}><FaHeart /> Saved</button>
           <button className={routedPanel === "discover" ? "active" : ""} type="button" onClick={() => showPanel("discover")}><FaSearch /> Discover</button>
-          <button className={routedPanel === "settings" ? "active" : ""} type="button" onClick={() => showPanel("settings")}><FaSlidersH /> Settings</button>
         </nav>
         <button className="sidebarLogout" type="button" onClick={handleLogout}>
           <FaSignOutAlt /> Logout
@@ -216,7 +215,7 @@ export function MyBookingsPage() {
           </section>
         )}
 
-        {routedPanel === "settings" && (
+        {false && (
           <section className="dashboardPanel">
             <div className="sectionHeader">
               <div><p className="eyebrow">Account</p><h2>Settings</h2></div>

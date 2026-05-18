@@ -3,7 +3,8 @@ import { useId, useState } from "react";
 import { useStore } from "../../store/StoreContext";
 import { useAuth } from "../../features/auth/hooks/useAuth";
 import { useSavedListings } from "../../features/listings/hooks/useToggleSaved";
-import { FaUserCircle } from "react-icons/fa";
+import { useNotifications } from "../hooks/useNotifications";
+import { FaBell, FaSignOutAlt, FaUserCircle } from "react-icons/fa";
 import styles from "./Navbar.module.css";
 
 function NavLinks({
@@ -48,14 +49,19 @@ export function Navbar() {
   const { state } = useStore();
   const { data: saved = [] } = useSavedListings();
   const { isAuthenticated, logout, user } = useAuth();
+  const { notifications, unreadCount, markAllRead } = useNotifications();
   const navigate = useNavigate();
   const savedCount = saved.length || state.saved.length;
 
   const [mobileOpen, setMobileOpen] = useState(false);
+  const [profileOpen, setProfileOpen] = useState(false);
+  const [notificationsOpen, setNotificationsOpen] = useState(false);
   const panelId = useId();
 
   const go = (path: string) => {
     setMobileOpen(false);
+    setProfileOpen(false);
+    setNotificationsOpen(false);
     navigate(path);
   };
 
@@ -71,6 +77,19 @@ export function Navbar() {
     }
 
     go(user?.role?.toUpperCase() === "HOST" ? "/host#reservations" : "/bookings#saved");
+  };
+
+  const dashboardPath =
+    user?.role?.toUpperCase() === "HOST"
+      ? "/host"
+      : user?.role?.toUpperCase() === "ADMIN"
+      ? "/admin"
+      : "/bookings";
+
+  const toggleNotifications = () => {
+    setNotificationsOpen((open) => !open);
+    setProfileOpen(false);
+    if (!notificationsOpen) markAllRead();
   };
 
   return (
@@ -115,15 +134,71 @@ export function Navbar() {
             )}
           </button>
 
-          {isAuthenticated ? (
-            <button className={styles.authBtn} onClick={handleLogout}>
-              Logout
-            </button>
-          ) : (
-            <button className={styles.loginIconBtn} onClick={() => go("/login")} aria-label="Login">
+          {isAuthenticated && (
+            <div className={styles.dropdownWrap}>
+              <button
+                className={styles.iconBtn}
+                aria-label="Notifications"
+                onClick={toggleNotifications}
+              >
+                <FaBell />
+                {unreadCount > 0 && (
+                  <span className={styles.badge}>{unreadCount}</span>
+                )}
+              </button>
+              {notificationsOpen && (
+                <div className={styles.dropdownPanel}>
+                  <strong className={styles.dropdownTitle}>Notifications</strong>
+                  {notifications.length === 0 ? (
+                    <p className={styles.dropdownEmpty}>No notifications yet.</p>
+                  ) : (
+                    notifications.slice(0, 6).map((notification) => (
+                      <button
+                        key={notification.id}
+                        className={styles.notificationItem}
+                        type="button"
+                        onClick={() => go(notification.href)}
+                      >
+                        <span>{notification.title}</span>
+                        <small>{notification.message}</small>
+                      </button>
+                    ))
+                  )}
+                </div>
+              )}
+            </div>
+          )}
+
+          <div className={styles.dropdownWrap}>
+            <button
+              className={styles.loginIconBtn}
+              onClick={() => {
+                setProfileOpen((open) => !open);
+                setNotificationsOpen(false);
+              }}
+              aria-label={isAuthenticated ? "Open profile menu" : "Open login menu"}
+            >
               <FaUserCircle />
             </button>
-          )}
+            {profileOpen && (
+              <div className={styles.dropdownPanel}>
+                {isAuthenticated ? (
+                  <>
+                    <strong className={styles.dropdownTitle}>{user?.name ?? "Profile"}</strong>
+                    <button type="button" onClick={() => go(dashboardPath)}>Dashboard</button>
+                    <button type="button" onClick={handleSavedClick}>Saved</button>
+                    <button type="button" onClick={handleLogout}><FaSignOutAlt /> Logout</button>
+                  </>
+                ) : (
+                  <>
+                    <strong className={styles.dropdownTitle}>Account</strong>
+                    <button type="button" onClick={() => go("/login")}>Login</button>
+                    <button type="button" onClick={() => go("/register")}>Register</button>
+                  </>
+                )}
+              </div>
+            )}
+          </div>
 
           {/* Mobile menu button */}
           <button
@@ -175,6 +250,19 @@ export function Navbar() {
               <span className={styles.badge}>{savedCount}</span>
             )}
           </button>
+
+          {isAuthenticated && (
+            <button
+              className={styles.iconBtn}
+              aria-label="Notifications"
+              onClick={() => go(dashboardPath)}
+            >
+              <FaBell />
+              {unreadCount > 0 && (
+                <span className={styles.badge}>{unreadCount}</span>
+              )}
+            </button>
+          )}
 
           {isAuthenticated ? (
             <button className={styles.authBtn} onClick={handleLogout}>
